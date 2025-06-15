@@ -1,2 +1,31 @@
-<h1>Home#show</h1>
-<p>Find me in app/views/home/show.html.erb</p>
+<!-- ヘッダー -->
+<header class="header">
+  <div class="home-hero"></div>
+
+  <nav class="nav_like">
+    <ul class="nav">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Fishing Spots</a></li>
+      <li><a href="#">Gear</a></li>
+      <% if session[:admin_id] %>
+        <li><%= link_to "管理者投稿", new_admin_post_path %></li>
+      <% end %>
+    </ul>
+  </nav>
+  <% if session[:admin_id] %>
+    <% admin = Admin.find_by(id: session[:admin_id]) %>
+    管理者：<%= admin.username %>
+    <%= button_to "ログアウト", admin_logout_path %>
+  <% else %>
+    <%= link_to "管理者", admin_login_path %>
+  <% end %>
+</header>
+
+<!-- メイン部分 -->
+<body>
+</body>
+
+<!-- フッター -->
+<footer class="footer">
+  <p>© 2025 Tsuri Blog</p>
+</footer>

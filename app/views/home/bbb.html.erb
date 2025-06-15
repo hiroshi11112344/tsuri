@@ -1,0 +1,46 @@
+ ,stprp00050s_ret.ward_cd as stprp00050s_ret_ward_cd
+                            ,stprp00050s_ret.ward_nm_short as stprp00050s_ret_ward_nm_short
+                            ,stprp00050s_ret.dept_cd as stprp00050s_ret_dept_cd
+                            ,stprp00050s_ret.dept_nm_short as stprp00050s_ret_dept_nm_short
+                            ,coalesce(m_room_view.room_nm_full, stprp00050s_ret.room_cd, '') as stprp00050s_ret_room
+                            ,stprp00016s(t_admission_emr.hosp_cd, 's0036'::text, t_admission_emr.patient_id, t_admission_emr.adm_id_emr) as stprp00016s_s0036
+                            ,stprp00016s(t_admission_emr.hosp_cd, 's0037'::text, t_admission_emr.patient_id, t_admission_emr.adm_id_emr) as stprp00016s_s0037
+                            ,stprp00016s(t_admission_emr.hosp_cd, 's0038'::text, t_admission_emr.patient_id, t_admission_emr.adm_id_emr) as stprp00016s_s0038
+                            ,stprp00017s(t_admission_emr.hosp_cd, 's0040'::text, t_admission_emr.patient_id, t_admission_emr.adm_id_emr, $5) as stprp00017s_s0040
+                            ,stprp00017s(t_admission_emr.hosp_cd, 's0040'::text, t_admission_emr.patient_id, t_admission_emr.adm_id_emr, '0') as stprp00017s_s0040_0
+                            ,stprp00017s(t_admission_emr.hosp_cd, 's0040'::text, t_admission_emr.patient_id, t_admission_emr.adm_id_emr, '1') as stprp00017s_s0040_1
+                            ,stprp00017s(t_admission_emr.hosp_cd, 's0040'::text, t_admission_emr.patient_id, t_admission_emr.adm_id_emr, '2') as stprp00017s_s0040_2
+                            ,stprp00017s(t_admission_emr.hosp_cd, 's0040'::text, t_admission_emr.patient_id, t_admission_emr.adm_id_emr, '3') as stprp00017s_s0040_3
+                            ,stprp00017s(t_admission_emr.hosp_cd, 's0040'::text, t_admission_emr.patient_id, t_admission_emr.adm_id_emr, '4') as stprp00017s_s0040_4
+                            ,stprp00017s(t_admission_emr.hosp_cd, 's0040'::text, t_admission_emr.patient_id, t_admission_emr.adm_id_emr, '5') as stprp00017s_s0040_5
+                            ,stprp00017s(t_admission_emr.hosp_cd, 's0040'::text, t_admission_emr.patient_id, t_admission_emr.adm_id_emr, '6') as stprp00017s_s0040_6
+                            ,stprp00017s(t_admission_emr.hosp_cd, 's0040'::text, t_admission_emr.patient_id, t_admission_emr.adm_id_emr, '7') as stprp00017s_s0040_7
+                            ,stprp00055s(t_admission_emr.hosp_cd, 's0040'::text, t_admission_emr.patient_id, t_admission_emr.adm_id_emr, null, 'stprb00035s_17') as stprp00055s_s0040
+                            ,stprp00018s(t_admission_emr.hosp_cd, 's0039'::text, t_admission_emr.patient_id, t_admission_emr.adm_id_emr) as stprp00018s_s0039
+                            ,stprp00019s(t_admission_emr.hosp_cd, 's0041'::text, t_admission_emr.patient_id, t_admission_emr.adm_id_emr) as stprp00019s_s0041
+                            ,stprp00480s(t_admission_emr.hosp_cd, 's1589'::text, t_admission_emr.patient_id, t_admission_emr.adm_id_emr) as stprp00480s_s1589
+                        from
+                            (
+                                select
+                                    t_patient_emr.hosp_cd as hosp_cd
+                                    ,t_patient_emr.patient_id as patient_id
+                                    ,t_patient_emr.patient_nm_kana as patient_nm_kana
+                                    ,t_patient_emr.birthday as birthday
+                                    ,t_patient_emr.sex as sex
+                                    ,t_patient_emr.patient_nm as patient_nm
+                                from
+                                    com_t_patient_emr t_patient_emr
+                                where
+                                    t_patient_emr.stop_fg = false
+                                    and t_patient_emr.delete_fg = false
+                                    and t_patient_emr.hosp_cd = $1
+                            ) t_patient_emr
+
+                                inner join com_t_admission_emr t_admission_emr
+                                    on t_patient_emr.hosp_cd = t_admission_emr.hosp_cd
+                                    and t_patient_emr.patient_id = t_admission_emr.patient_id
+                                    and date_trunc('seconds', t_admission_emr.adm_dttm) <= cast(date_trunc('seconds', now()) as timestamp without time zone)
+                                    and current_date <= cast(t_admission_emr.dischg_dttm as date)
+                                    and t_admission_emr.stop_fg = false
+                                    and t_admission_emr.delete_fg = false
+                         _nm_full 

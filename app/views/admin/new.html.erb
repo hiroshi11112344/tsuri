@@ -1,0 +1,23 @@
+<h2>新規投稿</h2>
+
+<%= form_with url: admin_create_post_path, local: true do |f| %>
+  <%# 将来ここに画像1を追加予定 %>
+  <div>
+    <%= f.label :content1, "本文1" %>
+    <%= f.text_area :content1 %>
+  </div>
+
+  <%# 将来ここに画像2を追加予定 %>
+  <div>
+    <%= f.label :content2, "本文2" %>
+    <%= f.text_area :content2 %>
+  </div>
+
+  <%# 将来ここに画像3を追加予定 %>
+  <div>
+    <%= f.label :content3, "本文3" %>
+    <%= f.text_area :content3 %>
+  </div>
+
+  <%= f.submit "投稿する" %>
+<% end %>

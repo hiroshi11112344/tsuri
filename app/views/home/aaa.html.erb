@@ -1,0 +1,184 @@
+-- stpr000002f 一覧検索基底Excel出力メンバー取得
+drop function if exists stpr000002f;
+create or replace function stpr000002f(arg text)
+    returns text
+as $function$
+    # coding: utf-8
+    import json
+
+    try:
+        arg_dict = json.loads(arg)
+        hospcd = arg_dict.get('hospcd', None)
+        outputformkey_info = arg_dict.get('outputformkey', None)
+        outputformkey_dict = json.loads(outputformkey_info)
+        outputformkey = outputformkey_dict.get('pkey', None)
+        formdatakeyinfo = arg_dict.get('formdatakeyinfo', None)
+        formdatakeyinfo_dict = json.loads(formdatakeyinfo)
+        formtitle = formdatakeyinfo_dict.get('formtitle', None)
+        patientid = formdatakeyinfo_dict.get('patientid', None)
+        perioddiv = formdatakeyinfo_dict.get('perioddiv', None)
+        period = formdatakeyinfo_dict.get('period', None)
+        fromdt = formdatakeyinfo_dict.get('fromdt', None)
+        todt = formdatakeyinfo_dict.get('todt', None)
+        
+        ret = None
+        results_dict = []
+        query = '''\
+                    select
+                        m_output_form.screen_key as screen_key
+                        , m_output_form.form_nm as form_nm
+                        , m_output_form.template_file_nm as templatefilenm
+                        , m_output_form.header_left as headerleft
+                        , m_output_form.header_center as headercenter
+                        , m_output_form.header_right as headerright
+                        , m_output_form.footer_left as footerleft
+                        , m_output_form.footer_center as footercenter
+                        , m_output_form.footer_right as footerright
+                        , m_output_form.screen_nm_use_fg as screen_nm_use_fg
+                        , m_output_form.output_form_title as output_form_title
+                        , m_screen.screen_cd as screen_cd
+                        , m_screen.screen_nm_full as screen_nm_full
+                        , m_team.team_nm_short as team_nm_short
+                    from
+                        (
+                            select
+                                m_output_form.screen_key as screen_key
+                                , m_output_form.form_nm as form_nm
+                                , m_output_form.template_file_nm as template_file_nm
+                                , m_output_form.header_left as header_left
+                                , m_output_form.header_center as header_center
+                                , m_output_form.header_right as header_right
+                                , m_output_form.footer_left as footer_left
+                                , m_output_form.footer_center as footer_center
+                                , m_output_form.footer_right as footer_right
+                                , m_output_form.screen_nm_use_fg as screen_nm_use_fg
+                                , m_output_form.output_form_title as output_form_title
+                            from
+                                com_m_output_form m_output_form
+                            where
+                                m_output_form.output_form_key = $1
+                        ) m_output_form
+                        inner join com_m_screen m_screen
+                            on m_output_form.screen_key = m_screen.screen_key
+                            and m_screen.stop_fg = false
+                        inner join com_m_team m_team
+                            on m_screen.team_key = m_team.team_key
+                            and m_team.stop_fg = false
+                ;'''
+        plan = plpy.prepare(query, ['bigint'])
+        rs = plpy.execute(plan, [outputformkey], 1)
+
+        query6 = \
+                '''
+                select
+                    t_patient_emr.patient_id as patient_id
+                    ,t_patient_emr.patient_nm as patient_nm
+                    ,t_patient_emr.birthday as patient_birthday
+                    ,stprp00003s(t_patient_emr.hosp_cd, t_patient_emr.patient_id, to_char(t_admission_emr.adm_dttm, 'yyyy/mm/dd')) as age_birthday
+                    ,m_screen_disp_item.item_val as patient_sex
+                    ,stprp00008s(t_admission_emr2.hosp_cd, t_admission_emr2.patient_id, t_admission_emr2.adm_dttm) as user_nm
+                    ,stprp00050s_ret.ward_cd as ward_cd
+                    ,stprp00050s_ret.ward_nm_short as ward_nm
+                    ,stprp00050s_ret.dept_nm_short as dept_nm
+                    ,t_admission_emr2.adm_dttm as adm_dttm
+                    ,t_admission_emr2.dischg_dttm as dischg_dttm
+                    ,t_admission_emr2.dischg_plan_dt as dischg_plan_dt
+
+                from
+                    com_t_patient_emr t_patient_emr
+                inner join com_t_admission_emr t_admission_emr
+                    on t_admission_emr.patient_id = t_patient_emr.patient_id
+                    and t_admission_emr.hosp_cd = t_patient_emr.hosp_cd
+                left join com_m_screen_disp_item_view m_screen_disp_item
+                    on t_patient_emr.sex = m_screen_disp_item.item_cd
+                    and m_screen_disp_item.disp_item_type = '4'
+                    and m_screen_disp_item.stop_fg = false
+
+                    left join (
+                        select *
+                        from com_t_admission_emr
+                        where hosp_cd = $1 and patient_id = $2
+                        and (
+                                case
+                                    when $4 = 'S1' then
+                                    case
+                                        when $3 is not null and $3 <> '' then
+                                        com_t_admission_emr.adm_id_emr = $3
+                                    else
+                                        true
+                                end
+                                when $4 = 'S2' then
+                                    case
+                                        when ($5 is not null and $5 <> '') and ($6 is not null and $6 <> '') then
+                                                com_t_admission_emr.adm_dttm between $5::date and $6::date
+                                        when ($5 is null or $5 = '') and ($6 is not null and $6 <> '') then
+                                                com_t_admission_emr.adm_dttm between '1900-01-01' and $6::date
+                                        when ($5 is not null and $5 <> '') and ($6 is null or $6 = '') then
+                                                com_t_admission_emr.adm_dttm between $5::date and '9999-12-31'
+                                        else
+                                            true
+                                    end
+                                else
+                                    false
+                                end
+                            )
+                        order by
+                            com_t_admission_emr.adm_dttm desc
+                        limit 1
+                    ) t_admission_emr2
+                    on t_admission_emr2.patient_id = t_patient_emr.patient_id
+                    and t_admission_emr2.hosp_cd = t_patient_emr.hosp_cd
+                    left join lateral (
+                        select *
+                        from json_to_recordset(
+                            stprp00050s(t_admission_emr2.hosp_cd,t_admission_emr2.patient_id,t_admission_emr2.adm_dttm)
+                        ) as t(
+                            hosp_cd text,
+                            patient_id text,
+                            ward_cd text,
+                            ward_nm_short text,
+                            dept_cd text,
+                            dept_nm_short text,
+                            room_cd text
+                        )
+                    ) as stprp00050s_ret
+                        on true
+                    
+                where
+                    t_patient_emr.stop_fg = false
+                    and t_patient_emr.delete_fg = false
+                    and t_patient_emr.patient_id = $2
+                    ;
+                '''
+        plan6 = plpy.prepare(query6, ['text', 'text', 'text', 'text', 'text', 'text'])
+        rs6 = plpy.execute(plan6, [hospcd, patientid, period, perioddiv, fromdt, todt])
+
+        patient_dict = []
+        list6_1 = {}
+        # plan6検索結果
+        if len(rs6) > 0:
+            row = rs6[0]
+            list6_1 = {
+                'patientid': row['patient_id']
+                ,'patientnm': row['patient_nm']
+                ,'patientbirthday': row['patient_birthday']
+                ,'agebirthday': row['age_birthday']
+                ,'patientsex': row['patient_sex']
+                ,'usernm' : row['user_nm']
+               
+                ,'admdttm' : row['adm_dttm']
+                ,'dischgdttm' : row['dischg_dttm']
+                ,'dischgplandt' : row['dischg_plan_dt']
+            }
+            plpy.info("▼ 取得データ ▼")
+            plpy.info("patient_id     : %s" % row['patient_id'])
+            plpy.info("patient_nm     : %s" % row['patient_nm'])
+            plpy.info("birthday       : %s" % row['patient_birthday'])
+            plpy.info("age_birthday   : %s" % row['age_birthday'])
+            plpy.info("patient_sex    : %s" % row['patient_sex'])
+            plpy.info("user_nm        : %s" % row['user_nm'])
+           
+            plpy.info("adm_dttm        : %s" % row['adm_dttm'])
+            patient_dict = list6_1
+
+        
