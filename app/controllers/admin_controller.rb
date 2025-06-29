@@ -24,6 +24,7 @@ class AdminController < ApplicationController
   end
 
   def new
+    @post = Post.new
     @admin = Admin.find_by(id: session[:admin_id])
   end
 
@@ -31,9 +32,9 @@ class AdminController < ApplicationController
   def create
     @post = Post.new(params.require(:post).permit(:image1, :content1, :image2, :content2, :image3, :content3))
     if @post.save
-      redirect_to admin_new_path
+      redirect_to post_path
     else
-      render :new, status: :unprocessable_entity
+      redirect_to home_show_path
     end
   end
 
