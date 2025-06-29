@@ -2,11 +2,15 @@ Rails.application.routes.draw do
   root "home#show"
   get "home/show", to: "home#show", as: :home_show
 
+  # 管理者
   get "admin/login", to: "admin#login", as: :admin_login
   post "admin/login", to: "admin#login_post", as: :admin_login_post
   post "admin/logout", to: "admin#logout", as: :admin_logout
   get "admin/new", to: "admin#new", as: :new_admin_post
   post "admin/create", to: "admin#create", as: :admin_create_post
+
+  #　閲覧ページ
+  get "post", to: "posts#show"
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

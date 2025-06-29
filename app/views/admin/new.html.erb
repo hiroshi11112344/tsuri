@@ -1,6 +1,6 @@
 <h2>新規投稿</h2>
 
-<%= form_with url: admin_create_post_path, local: true do |f| %>
+<%= form_with model: @post, url: admin_create_post_path, local: true do |f| %>
   <%# 将来ここに画像1を追加予定 %>
   <div>
     <%= f.label :content1, "本文1" %>

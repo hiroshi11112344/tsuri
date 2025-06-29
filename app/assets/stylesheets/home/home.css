@@ -33,3 +33,18 @@
   margin-top: 2rem;
   border-radius: 1rem;
 }
+
+.home-Twitter {
+  background-image: url("home/Twitter.png");/*画像*/
+  background-repeat: no-repeat; /*これがないと画像がループする*/
+  background-size: contain;
+  background-repeat: no-repeat;
+
+  position: absolute; /* 親要素を基準に絶対配置（右上に置くため） */
+  top: 40px;          /* 上から16pxの位置に配置 */
+  right: 40px;        /* 右から16pxの位置に配置 */
+  width: 50px;        /* 幅40px（アイコンサイズ） */
+  height: 50px;       /* 高さ40px（アイコンサイズ） */
+  border-radius: 50%; /* 円形にするため角をすべて丸める */
+
+}
