@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   post "admin/create", to: "admin#create", as: :admin_create_post
 
   #　閲覧ページ
-  get "post", to: "posts#show"
+  get "post/:id", to: "posts#show", as: :post
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
