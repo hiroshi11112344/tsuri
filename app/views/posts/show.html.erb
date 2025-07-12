@@ -1,21 +1,27 @@
-<h2>最新の投稿</h2>
+<h2>投稿の詳細</h2>
 
 <section>
   <figure>
     <figcaption>画像1</figcaption>
-    <p>【画像1】</p>
+    <% if @post.image1.attached? %>
+      <%= image_tag @post.image1 %>
+    <% end %>
     <p><%= @post.content1 %></p>
   </figure>
 
   <figure>
     <figcaption>画像2</figcaption>
-    <p>【画像2】</p>
+    <% if @post.image2.attached? %>
+      <%= image_tag @post.image2 %>
+    <% end %>
     <p><%= @post.content2 %></p>
   </figure>
 
   <figure>
     <figcaption>画像3</figcaption>
-    <p>【画像3】</p>
+    <% if @post.image3.attached? %>
+      <%= image_tag @post.image3 %>
+    <% end %>
     <p><%= @post.content3 %></p>
   </figure>
 </section>

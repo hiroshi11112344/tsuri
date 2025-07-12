@@ -32,7 +32,7 @@ class AdminController < ApplicationController
   def create
     @post = Post.new(params.require(:post).permit(:image1, :content1, :image2, :content2, :image3, :content3))
     if @post.save
-      redirect_to post_path
+      redirect_to post_path(@post)
     else
       redirect_to home_show_path
     end
