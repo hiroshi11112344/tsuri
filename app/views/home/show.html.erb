@@ -24,6 +24,17 @@
 
 <!-- メイン部分 -->
 <body>
+  <section class="top-four-posts">
+    <% @posts.select { |p| p.image1.attached? }.first(4).each do |post| %>
+      <% if post.image1.attached? %>
+      <div class="post-item">
+          <%= link_to post_path(post) do %>
+            <%= image_tag post.image1, class: "top-image" %>
+          <% end %>
+          </div>
+      <% end %>
+    <% end %>
+  </section>
 </body>
 
 <!-- フッター -->

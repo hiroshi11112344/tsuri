@@ -4,6 +4,6 @@ class PostsController < ApplicationController
   end
 
   def show
-    @post = Post.order(created_at: :desc).first
+    @post = Post.find(params[:id])
   end
 end
