@@ -1,10 +1,10 @@
-/**/
+/*header*/
 .home-hero {
   background-image: url("home/hero.png");/*画像*/
   background-repeat: no-repeat; /*これがないと画像がループする*/
   background-size: cover; /*画像を全体背景として自然にフィット*/
   background-position: center; /*要素の中心に合わせて表示*/
-  height: 300px;
+  height: 270px;
   border-radius: 1rem;
 }
 
@@ -24,16 +24,7 @@
   font-size: 1rem;
 }
 
-.footer {
-  background-color: #0d3b66; /* 濃い青色 */
-  color: white;
-  text-align: center;
-  padding: 1rem;
-  font-size: 0.9rem;
-  margin-top: 2rem;
-  border-radius: 1rem;
-}
-
+/*Twitterマークー、リンク飛ばし*/
 .home-Twitter {
   background-image: url("home/Twitter.png");/*画像*/
   background-repeat: no-repeat; /*これがないと画像がループする*/
@@ -47,4 +38,37 @@
   height: 50px;       /* 高さ40px（アイコンサイズ） */
   border-radius: 50%; /* 円形にするため角をすべて丸める */
 
+}
+
+/*body*/
+/*画像親区分*/
+.top-four-posts {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 横2列 */
+  gap: 20px; /* 間隔 */
+  padding: 20px;
+}
+/*画像大きさ*/
+.top-image {
+  width: 94%;
+  height: 200px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/*ホバーでホップアップ*/
+.top-image:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/*footer*/
+.footer {
+  background-color: #0d3b66; /* 濃い青色 */
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.9rem;
+  margin-top: 2rem;
+  border-radius: 1rem;
 }
