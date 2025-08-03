@@ -1,29 +1,22 @@
 <h2>新規投稿</h2>
 
 <%= form_with model: @post, url: admin_create_post_path, local: true, html: { multipart: true } do |f| %>
-  <%# 将来ここに画像1を追加予定 %>
+
+  <!-- タイトル -->
   <div>
-    <%= f.label :content1, "本文1" %>
-    <%= f.text_area :content1 %>
-    <%= f.label :image1, "画像1" %>
-    <%= f.file_field :image1 %>
+    <%= f.label :title, "タイトル" %>
+    <%= f.text_field :title %>
   </div>
 
-  <%# 将来ここに画像2を追加予定 %>
-  <div>
-    <%= f.label :content2, "本文2" %>
-    <%= f.text_area :content2 %>
-    <%= f.label :image2, "画像2" %>
-    <%= f.file_field :image2 %>
-  </div>
+  <% (1..10).each do |i| %>
+    <div>
+      <%= f.label "content#{i}", "本文#{i}" %>
+      <%= f.text_area "content#{i}" %>
 
-  <%# 将来ここに画像3を追加予定 %>
-  <div>
-    <%= f.label :content3, "本文3" %>
-    <%= f.text_area :content3 %>
-    <%= f.label :image3, "画像3" %>
-    <%= f.file_field :image3 %>
-  </div>
+      <%= f.label "image#{i}", "画像#{i}" %>
+      <%= f.file_field "image#{i}" %>
+    </div>
+  <% end %>
 
   <%= f.submit "投稿する" %>
 <% end %>

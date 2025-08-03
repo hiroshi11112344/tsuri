@@ -1,0 +1,39 @@
+/* 親コンテナ：メインとサイドバー */
+.content-wrapper {
+  display: flex; /* 子要素（.main-content と .sidebar）を横並びにする */
+  flex-direction: row; /* 横方向（左→右）に並べる（デフォルトなので省略可） */
+  justify-content: space-between; /* 両端に子要素を寄せて、その間にスペースを空ける */
+  gap: 2rem; /* 子要素同士の間に 2rem の隙間を作る */
+}
+
+/* メインコンテンツ（左側） */
+.main-content {
+  flex: 1; /* 空いてるスペースを全部使って広がる */
+  max-width: 700px; /* でも最大700pxまでに制限（画面が広すぎても読みやすい幅を保つ） */
+}
+
+/* サイドバー（右側。今は空でもOK） */
+.sidebar {
+  width: 250px; /* 固定幅250pxのスペースを確保。将来プロフィールや広告などを置く想定 */
+}
+
+/* 各 figure（画像＋本文）のまとまり */
+figure {
+  margin-bottom: 3rem; /* 各記事ブロックの下に 3rem の余白を空ける（区切りのため） */
+}
+
+/* 画像のスタイル */
+figure img {
+  width: 100%; /* 横幅は親要素（figure）に合わせて全幅 */
+  height: auto; /* 高さは自動調整*/
+  max-width: 450px;/* 高さは最大調整*/
+  display: block; /* インライン要素の隙間をなくすために block に */
+  border-radius: 8px; /* 角を少し丸くしてデザインを柔らかく見せる */
+}
+
+/* 本文テキストのスタイル */
+figure p {
+  margin-top: 0.5rem; /* 画像との間に少しスペースを入れる */
+  line-height: 1.6; /* 行間を少し広めにして読みやすくする */
+  font-size: 1rem; /* 標準的なテキストサイズに */
+}
