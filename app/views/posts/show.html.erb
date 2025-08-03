@@ -1,27 +1,33 @@
-<h2>投稿の詳細</h2>
+<div class="content-wrapper">
+  <div class="main-content">
+    <!-- タイトル表示（将来的に @post.title にデータが入る想定） -->
+    <div class="post-title">
+      <%= @post.title.presence || "（タイトル未設定）" %>
+    </div>
 
-<section>
-  <figure>
-    <figcaption>画像1</figcaption>
-    <% if @post.image1.attached? %>
-      <%= image_tag @post.image1 %>
-    <% end %>
-    <p><%= @post.content1 %></p>
-  </figure>
+    <section>
+      <% (1..10).each do |i| %>
+        <% image = @post.send("image#{i}") %>
+        <% content = @post.send("content#{i}") %>
 
-  <figure>
-    <figcaption>画像2</figcaption>
-    <% if @post.image2.attached? %>
-      <%= image_tag @post.image2 %>
-    <% end %>
-    <p><%= @post.content2 %></p>
-  </figure>
+        <% if (image.respond_to?(:attached?) && image.attached?) || content.present? %>
+          <figure>
+            <figcaption>画像<%= i %></figcaption>
 
-  <figure>
-    <figcaption>画像3</figcaption>
-    <% if @post.image3.attached? %>
-      <%= image_tag @post.image3 %>
-    <% end %>
-    <p><%= @post.content3 %></p>
-  </figure>
-</section>
+            <% if image.respond_to?(:attached?) && image.attached? %>
+              <%= image_tag image %>
+            <% end %>
+
+            <% if content.present? %>
+              <p><%= content %></p>
+            <% end %>
+          </figure>
+        <% end %>
+      <% end %>
+    </section>
+  </div>
+
+  <aside class="sidebar">
+    <!-- 今は空でもOK。将来的にプロフィールや広告など入れる想定 -->
+  </aside>
+</div>

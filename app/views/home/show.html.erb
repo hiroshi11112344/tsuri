@@ -25,13 +25,15 @@
 <!-- メイン部分 -->
 <body>
   <section class="top-four-posts">
-    <% @posts.select { |p| p.image1.attached? }.first(4).each do |post| %>
-      <% if post.image1.attached? %>
-      <div class="post-item">
+    <% @posts.select { |p| (1..10).any? { |i| p.send("image#{i}").attached? }}.first(4).each do |post| %>
+      <% image = (1..10).map { |i| post.send("image#{i}") }.find(&:attached?) %>
+
+      <% if image %>
+        <div class="post-item">
           <%= link_to post_path(post) do %>
-            <%= image_tag post.image1, class: "top-image" %>
+            <%= image_tag image, class: "top-image" %>
           <% end %>
-          </div>
+        </div>
       <% end %>
     <% end %>
   </section>
